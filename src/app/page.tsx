@@ -1,27 +1,13 @@
-async function Home  ()  {
-  
-    const response = await fetch("https://jsonplaceholder.typicode.com/albums");
-    if(!response.ok) throw new Error("Failed to fetch data");
-    const albums = await response.json();
+import React from 'react'
 
-    return(
-
-        <div className="grid grid-cols-1 sm:grid-cols-4 md:grid-cols">
-          {
-            albums.map((albums:{id:number, title : string}) => (
-              <div
-                key={albums.id}
-                className="bg-white shadow-md rounded-lg p-4 transition t..."
-                >
-                  <h3 className="text-lg font-bold mb-2">{albums.title}</h3>
-                  <p className="text-gray-600">Album ID : {albums.id}</p>
-              </div>
-            ))
-          }
-
-        </div>
-
-    );
+const Home = () => {
+  return (
+    <section>
+      <h1 className='text-center'>The Hub for every Tech <br/> Event that you can't miss.</h1>
+      <p className='text-center mt-5'>Hackathons, Conferences, Meetups, and More, All in One Place.</p>
+    </section>
+  )
 }
 
 export default Home
+ 
