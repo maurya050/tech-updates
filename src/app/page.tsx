@@ -1,5 +1,7 @@
 import React from 'react'
 import ExploreBtn from '@/components/ExploreBtn';
+import EventCard from '@/components/EventCard';
+import { events } from '@/lib/events';
 
 const Home = () => {
   return (
@@ -13,16 +15,14 @@ const Home = () => {
         <h3>Featured Events</h3>
 
         <ul className='events'>
-          {[1,2,3,4].map((event) => (
-            <li key={event} className="event-card">
-              <h4>Event Title {event}</h4>
-              <p>Date: 2024-07-0{event} | Location: City {event}</p>
-              <p className='mt-3'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nisl eros, pulvinar facilisis justo mollis, auctor consequat urna.</p>
-              <a href="#" className='text-sm mt-5 inline-block underline'>Learn More</a>
+          {events.map((event, index) => (
+            <li key={index}>
+                <EventCard {...event} />
             </li>
-          ))}
+          ))} 
 
         </ul>
+        
       </div>
     </section>
   )
