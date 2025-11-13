@@ -3,6 +3,9 @@ import { Schibsted_Grotesk, Martian_Mono } from "next/font/google";
 import "./globals.css";
 import LightRays from "@/components/LightRays";
 import Navbar from "@/components/Navbar";
+import { PHProvider } from './providers';
+import PostHogPageView from './PostHogPageView';
+import { Suspense } from 'react';
 
 const schibstedGrotesk = Schibsted_Grotesk({
   variable: "--font-schibsted-grotesk",
@@ -29,7 +32,11 @@ export default function RootLayout({
       <body
         className={`${schibstedGrotesk.variable} ${martianMono.variable} min-h-screen antialiased`}
       > 
-      <Navbar />
+      <PHProvider>
+        <Suspense fallback={null}>
+          <PostHogPageView />
+        </Suspense>
+        <Navbar />
         <div className="absolute inset-0 top-0 z-[-1] min-h-screen">
           <LightRays
             raysOrigin="top-center-offset"
@@ -46,6 +53,7 @@ export default function RootLayout({
         <main>
           {children}
         </main>
+      </PHProvider>
       </body>
     </html>
   );

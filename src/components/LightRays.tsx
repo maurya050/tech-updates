@@ -120,6 +120,7 @@ const LightRays: React.FC<LightRaysProps> = ({
 
   useEffect(() => {
     if (!isVisible || !containerRef.current) return;
+    if (typeof window === 'undefined') return; // Client-side only
 
     if (cleanupFunctionRef.current) {
       cleanupFunctionRef.current();
@@ -133,11 +134,12 @@ const LightRays: React.FC<LightRaysProps> = ({
 
       if (!containerRef.current) return;
 
-      const renderer = new Renderer({
-        dpr: Math.min(window.devicePixelRatio, 2),
-        alpha: true,
-      });
-      rendererRef.current = renderer;
+      try {
+        const renderer = new Renderer({
+          dpr: Math.min(window.devicePixelRatio, 2),
+          alpha: true,
+        });
+        rendererRef.current = renderer;
 
       const gl = renderer.gl;
       gl.canvas.style.width = "100%";
@@ -364,6 +366,10 @@ void main() {
         uniformsRef.current = null;
         meshRef.current = null;
       };
+      } catch (error) {
+        console.error("Failed to initialize WebGL:", error);
+        return;
+      }
     };
 
     initializeWebGL();
