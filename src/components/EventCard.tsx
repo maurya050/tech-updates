@@ -19,7 +19,7 @@ const EventCard = ({title, image, slug, location, date, time}: EventCardProps) =
                 <p>{location}</p>
             </div>
             <p className="title">{title}</p>
-            <p className="datetime">
+            <div className="datetime">
                 <div>
                     <Image src="/icons/calendar.svg" alt="Date" width={16} height={16} />
                     <p>{date}</p>
@@ -28,7 +28,7 @@ const EventCard = ({title, image, slug, location, date, time}: EventCardProps) =
                     <Image src="/icons/clock.svg" alt="Time" width={16} height={16} />
                     <p>{time}</p>
                 </div>
-            </p>
+            </div>
         </Link>
   )
 }
