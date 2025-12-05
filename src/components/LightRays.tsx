@@ -120,28 +120,51 @@ const LightRays: React.FC<LightRaysProps> = ({
 
   useEffect(() => {
     if (!isVisible || !containerRef.current) return;
+    if (typeof window === 'undefined') return; // Client-side only
 
     if (cleanupFunctionRef.current) {
       cleanupFunctionRef.current();
       cleanupFunctionRef.current = null;
     }
 
+    let isCancelled = false;
+
     const initializeWebGL = async () => {
-      if (!containerRef.current) return;
+      if (!containerRef.current || isCancelled) return;
+
+      // Check WebGL support
+      const canvas = document.createElement('canvas');
+      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      if (!gl) {
+        console.warn('WebGL not supported, skipping LightRays animation');
+        return;
+      }
 
       await new Promise((resolve) => setTimeout(resolve, 10));
 
-      if (!containerRef.current) return;
+      if (!containerRef.current || isCancelled) return;
 
-      const renderer = new Renderer({
-        dpr: Math.min(window.devicePixelRatio, 2),
-        alpha: true,
-      });
-      rendererRef.current = renderer;
+      try {
+        const renderer = new Renderer({
+          dpr: Math.min(window.devicePixelRatio, 2),
+          alpha: true,
+          canvas: document.createElement('canvas'),
+        });
+        
+        if (!renderer || !renderer.gl || isCancelled) {
+          console.warn("WebGL renderer creation failed, skipping animation");
+          return;
+        }
+        
+        if (!containerRef.current || isCancelled) return;
+        
+        rendererRef.current = renderer;
 
       const gl = renderer.gl;
       gl.canvas.style.width = "100%";
       gl.canvas.style.height = "100%";
+
+      if (!containerRef.current || isCancelled) return;
 
       while (containerRef.current.firstChild) {
         containerRef.current.removeChild(containerRef.current.firstChild);
@@ -364,11 +387,16 @@ void main() {
         uniformsRef.current = null;
         meshRef.current = null;
       };
+      } catch (error) {
+        console.error("Failed to initialize WebGL:", error);
+        return;
+      }
     };
 
     initializeWebGL();
 
     return () => {
+      isCancelled = true;
       if (cleanupFunctionRef.current) {
         cleanupFunctionRef.current();
         cleanupFunctionRef.current = null;
